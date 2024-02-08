@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <title>UI</title>
+
+        <link rel="stylesheet" href="./css/home_style.css">
+        <script type="text/javascript" src="./js/scripts.js" charset="utf-8"></script>
+    </head>
+
+    <body onload="main()">
+        <header class="container top">
+            <h1 id="title">Test UI</h1>
+        </header>
+
+        <main>
+            <div class="subcontainer battery" id="battery-life-cntr">
+                <h3>Battery life: </h3> <h3 id="battery-percent">Null%</h3>
+                <h3>Kb up/down: </h3> <h3 id="send-receive">0Kb</h3>
+                <h3>Motor Controllers: </h3> <h3 id="motor-controller">?</h3>
+                <h3>Controller Input: </h3> <h3 id="controller-input">Null</h3>
+                <h3>Part Moving: </h3> <h3 id="moving-part">Null </h3>
+            </div>
+
+            <div class="subcontainer moving-parts" id="moving-part-display">
+                <div class="subsubcontainer part" id="motor1"><h3>Motor 1</h3></div>
+                <div class="subsubcontainer part" id="motor2"><h3>Motor 2</h3></div>
+                <div class="subsubcontainer part" id="excavator"><h3>Excavator</h3></div>
+                <div class="subsubcontainer part" id="bin"><h3>Bin actuator</h3></div>
+            </div>
+        </main>
+    </body>
+</html>
