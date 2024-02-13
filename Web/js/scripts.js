@@ -46,59 +46,64 @@ function GameLoop() {
         } else {
             MoveBack(false);
         }
-
+        
+        //If user presses A, activate excavator
         if (buttons[0].pressed){
             console.log("Left");
-            MoveLeft(true);
+            ActivateExcavator(true);
             moving_parts_count++;
         } else {
-            MoveLeft(false);
+            ActivateExcavator(false);
         }
 
+        //If user presses B, activate bin
         if (buttons[1].pressed){
             console.log("right");
-            MoveRight(true);
+            ActivateBin(true);
             moving_parts_count++;
         } else {
-            MoveRight(false);
+            ActivateBin(false);
         }
     } 
     var moving_parts = document.getElementById("moving-part");
-    moving_parts.innerHTML = moving_parts_count.toString();
+    moving_parts.innerHTML = moving_parts_count;
 }
+
+const pressed_color = "#ee8282";
+const unpressed_color = "transparent";
 
 function MoveForward(isPressed){
     var part = document.getElementById("motor1");
     if (isPressed == true){
-        part.style.backgroundColor = "#FC2E2E";
+        part.style.backgroundColor = pressed_color;
     } else {
-        part.style.backgroundColor = "aliceblue";
+        part.style.backgroundColor = unpressed_color;
     }
 }
 
 function MoveBack(isPressed){
     var part = document.getElementById("motor2");
     if (isPressed == true){
-        part.style.backgroundColor = "#FC2E2E";
+        part.style.backgroundColor = pressed_color;
     } else {
-        part.style.backgroundColor = "aliceblue";
+        part.style.backgroundColor = unpressed_color;
     }
 }
 
-function MoveLeft(isPressed){
+function ActivateExcavator(isPressed){
     var part = document.getElementById("excavator");
     if (isPressed == true){
-        part.style.backgroundColor = "#FC2E2E";
+        part.style.backgroundColor = pressed_color;
     } else {
-        part.style.backgroundColor = "aliceblue";
+        part.style.backgroundColor = unpressed_color;
     }
 }
 
-function MoveRight(isPressed){
+function ActivateBin(isPressed){
     var part = document.getElementById("bin");
     if (isPressed == true){
-        part.style.backgroundColor = "#FC2E2E";
+        part.style.backgroundColor = pressed_color;
     } else {
-        part.style.backgroundColor = "aliceblue";
+        part.style.backgroundColor = unpressed_color;
     }
 }
