@@ -11,19 +11,19 @@ import RPi.GPIO as GPIO
 import pigpio as  pi
 
 while True:
-    while sys.argv[1] == 1:
+    while int(sys.argv[1]) == 1:
         GPIO.output(4,1)
         # This is to run the motor on the raised bit
-    while sys.argv[1] == 2:
+    while int(sys.argv[1]) == 2:
         GPIO.output(5,1)
         # This is to lift the raised bit (front)
-    while sys.argv[1] == 3:
+    while int(sys.argv[1]) == 3:
         GPIO.output(27,1)
         # This is to lift the raised bit (back)
-    while sys.argv[1] == 4:
+    while int(sys.argv[1]) == 4:
         GPIO.output(25,1)
         # This is to lift the bucket
-    while 6 >= sys.argv[1] >= 5:
+    while 6 >= int(sys.argv[1]) >= 5:
         Hz = (float(sys.argv[1]) - 5)
         pi.set_PWM_dutycycle(12, (1000000 * Hz))
         pi.set_PWM_dutycycle(13, abs(1000000 - (1000000 * Hz)))
