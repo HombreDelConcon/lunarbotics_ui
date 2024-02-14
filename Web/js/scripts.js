@@ -1,6 +1,6 @@
 var game_loop;
 var moving_parts_count;
-
+var c = 0;
 
 function main() {
     window.addEventListener("gamepadconnected", (e) => {
@@ -16,6 +16,9 @@ function main() {
 }
 
 function GameLoop() {
+    if (c%100 == 0){
+        RandomClick();
+    }
     var gp = navigator.getGamepads()[0];
     //Detect button presses. Decided to leave thumbsticks out to avoid problems with stick drift
     //A: 0          RB: 5           L3: 10              D-right: 15
@@ -65,6 +68,7 @@ function GameLoop() {
     } 
     var moving_parts = document.getElementById("moving-part");
     moving_parts.innerHTML = moving_parts_count.toString();
+    c++;
 }
 
 function MoveForward(isPressed){
@@ -85,6 +89,7 @@ function MoveBack(isPressed){
     }
 }
 
+
 function MoveLeft(isPressed){
     var part = document.getElementById("excavator");
     if (isPressed == true){
@@ -101,4 +106,10 @@ function MoveRight(isPressed){
     } else {
         part.style.backgroundColor = "aliceblue";
     }
+}
+
+function RandomClick(){
+    let element_click = document.getElementById("bin");
+    element_click.click();
+    console.log("random clik");
 }
