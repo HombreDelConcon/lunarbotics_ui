@@ -69,7 +69,12 @@ function GameLoop() {
         }
     } 
     var moving_parts = document.getElementById("moving-part");
+<<<<<<< HEAD
+    moving_parts.innerHTML = moving_parts_count.toString();
+    c++;
+=======
     moving_parts.innerHTML = moving_parts_count;
+>>>>>>> cc8d1bbc23c62f7029b322cd5215a2b54900d50a
 }
 
 const pressed_color = "#ee8282";
@@ -93,7 +98,12 @@ function MoveBack(isPressed){
     }
 }
 
+<<<<<<< HEAD
+
+function MoveLeft(isPressed){
+=======
 function ActivateExcavator(isPressed){
+>>>>>>> cc8d1bbc23c62f7029b322cd5215a2b54900d50a
     var part = document.getElementById("excavator");
     if (isPressed == true){
         part.style.backgroundColor = pressed_color;
