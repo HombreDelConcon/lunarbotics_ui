@@ -1,6 +1,7 @@
 var game_loop;
 var moving_parts_count;
 var c = 0;
+var last_request = new Date().getMilliseconds();
 
 function main() {
     window.addEventListener("gamepadconnected", (e) => {
@@ -37,6 +38,7 @@ function GameLoop() {
             console.log("forward");
             MoveForward(true);
             moving_parts_count++;
+            getData();
         } else {
             MoveForward(false);
         }
@@ -115,4 +117,42 @@ function RandomClick(){
     let element_click = document.getElementById("bin");
     element_click.click();
     console.log("random clik");
+}
+
+function getData(){
+
+    let req_time = new Date().getMilliseconds();
+
+    if (last_request - req_time < 500){
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", "https://regres.in/api/users");
+        xhr.send();
+        console.log("request send");
+        
+    }
+}
+
+//Sedn the dummy request. If the 
+function buttonOnclick() {
+    let req_time = new Date().getMilliseconds();
+
+    if (last_request - req_time < 500){
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://127.0.0.1:5000/test", true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    // Request was successful, handle response here
+                    console.log(xhr.responseText);
+                    var toJson = JSON.parse(xhr.responseText);
+                    console.log(toJson["stat"]);
+                } else {
+                    // Request failed
+                    console.error('Request failed with status:', xhr.status);
+                }
+            }
+        };
+        xhr.send();
+        console.log("request sent to python server");
+    }
 }
