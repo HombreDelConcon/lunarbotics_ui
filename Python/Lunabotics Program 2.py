@@ -4,11 +4,11 @@ Created on Wed Feb  7 19:47:06 2024
 
 @author: Corin
 """
-# import sys
-# # from time import sleep
-# import RPi.GPIO as GPIO
-# # import keyboard
-# import pigpio as  pi
+import sys
+# from time import sleep
+import RPi.GPIO as GPIO
+# import keyboard
+import pigpio as pgp
 import requests
 import json
 
@@ -18,6 +18,8 @@ class RPI_output:
 
 		for pin in [4, 5, 27, 25, 12, 13]:
 			GPIO.setup(pin, GPIO.OUT)
+
+		
 	
 	def main_loop(self):
 		try:
@@ -36,8 +38,8 @@ class RPI_output:
 					# This is to lift the bucket
 				while 6 >= int(sys.argv[1]) >= 5:
 					Hz = (float(sys.argv[1]) - 5)
-					pi.set_PWM_dutycycle(12, (1000000 * Hz))
-					pi.set_PWM_dutycycle(13, abs(1000000 - (1000000 * Hz)))
+					pgp.set_PWM_dutycycle(12, (1000000 * Hz))
+					pgp.set_PWM_dutycycle(13, abs(1000000 - (1000000 * Hz)))
 					GPIO.PWM(12,60)
 					GPIO.PWM(13,60)
 					# This is PWM for the wheels
