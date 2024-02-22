@@ -64,5 +64,5 @@ class RPI_output:
 
 if __name__ == "__main__":
 	pi = RPI_output()
-	RPI_output.main_loop()
+	pi.main_loop()
 	# pi.send_request()
