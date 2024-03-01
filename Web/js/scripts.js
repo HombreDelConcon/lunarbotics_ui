@@ -1,7 +1,11 @@
 var game_loop;
 var moving_parts_count;
 var c = 0;
-var last_request = new Date().getMilliseconds();
+var last_request_GET = new Date()
+var last_request_POST = new Date().getMilliseconds();
+console.log(last_request_GET);
+console.log(last_request_POST);
+var server = "http://127.0.0.1:5000/test";
 
 function main() {
     window.addEventListener("gamepadconnected", (e) => {
@@ -121,9 +125,9 @@ function RandomClick(){
 
 function getData(){
 
-    let req_time = new Date().getMilliseconds();
+    let req_time = new Date();
 
-    if (last_request - req_time < 500){
+    if (last_request_GET - req_time > 500){
         const xhr = new XMLHttpRequest();
         xhr.open("GET", "https://regres.in/api/users");
         xhr.send();
@@ -132,13 +136,16 @@ function getData(){
     }
 }
 
-//Sedn the dummy request. If the 
-function buttonOnclick() {
-    let req_time = new Date().getMilliseconds();
+//Sedn the dummy request. If the time since the last request is less than 500 ms,
+//  it will not send the request
+function buttonOnclickGet() {
+    console.log("GET");
+    let req_time = new Date();
+    console.log(req_time - last_request_GET);
 
-    if (last_request - req_time < 500){
+    if (req_time - last_request_GET > 500){
         const xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://127.0.0.1:5000/test", true);
+        xhr.open("GET", server, true);
         xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
@@ -154,5 +161,22 @@ function buttonOnclick() {
         };
         xhr.send();
         console.log("request sent to python server");
+        last_request_GET = new Date();
+    }
+}
+
+function buttonOnclickPost() {
+    console.log("POST");
+    let req_time = new Date();
+    console.log(req_time - last_request_POST);
+
+    if (req_time - last_request_POST > 500){
+        const xhr = new XMLHttpRequest();
+        var data = {"forward/back": 0,"right/left": 1,};
+        xhr.open("POST", server, true);
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.send(JSON.stringify(data));
+        console.log("request sent to python server");
+        last_request_POST = new Date();
     }
 }

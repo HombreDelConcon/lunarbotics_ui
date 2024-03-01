@@ -51,7 +51,30 @@ main > * {
     height: 50px; 
 }
 
+#speed-bars-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: fit-content;
+    margin-top: 20px;
+    max-width: 700px;
+}
+
 .subcontainer {
     margin-top: 20px;
     background-color: aliceblue;
 }
+
+#motor-speed-container,#actuator-speed-container {
+    background-color: aliceblue;
+}
+
+.speed-bar {
+    height:20px;
+    background-color: red;
+    border: 3px solid black;
+    margin: 0px 5px 5px 5px;
+}
+
+/* #button1, #button2 {
+    display: none;
+} */

@@ -1,49 +1,62 @@
 from flask import Flask, jsonify, request, Response, make_response
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app=app)
+
+origin = str(input("type out the origin's URL:\n"))
+if origin == "":
+   origin = "http://127.0.0.1:5500"
+   print("Origin set to default of localhost on port 5500")
+server_route = "/test"
+server_host = "0.0.0.0"
+server_port = 5000
 
 #Define a class which will store robot state to post onto the server. The
 #   RasPi will be able to post to the server and 
 class RobotState:
-   def __init__(self, **control):
-      self._motor1 = False
-      self._motor2 = False
-      self._lin_act = False
-      self._misc = False
-      if control["motor1"] and type(control["motor1"]) == bool:
-         self._motor1 = control["motor1"]
-         print("Set motor 1")
-      if control["motor2"] and type(control["motor2"]) == bool:
-         self._motor2 = control["motor2"]
-         print("Set motor 2")
-      if control["lin_act"] and type(control["lin_act"]) == bool:
-         self._lin_act = control["lin_act"]
-         print("Set linear actuators")
-      if control["misc"] and type(control["misc"]) == bool:
-         self._misc = control["misc"]
-         print("Set misc")
+   def __init__(self):
+      self.lmotors = 0
+      self.rmotors = 0
+      self.le_motor = 0
+      self.bin_motor = 0
+      self.le_speed = 1
+      self.lr_motor_speed = 1
+      self.back_act = 0
+      self.front_act = 0
 
-   def set_motor1(self, new_value:bool) -> None:
-      if not type(new_value) == bool:
-         raise TypeError("Passed in wrong type for set_motor1. Function only takes bool as parameter")
-      self._motor1 = new_value
-   
-   def set_motor2(self, new_value:bool) -> None:
-      if not type(new_value) == bool:
-         raise TypeError("Passed in wrong type for set_motor2. Function only takes bool as parameter")
-      self._motor2 = new_value
-      
-@app.route('/test', methods=["GET"])
-def get_req():
+   def setAttributes(self, attributes:dict):
+      try:
+         self.rmotors = attributes["rmotors"]
+         self.lmotors = attributes["lmotors"]
+         self.le_motor = attributes["lemotors"]
+         self.bin_motor = attributes["binmotor"]
+         self.le_speed = attributes["lespeed"]
+         self.lr_motor_speed = attributes["lrspeed"]
+         self.back_act = attributes["backact"]
+         self.front_act = attributes["frontact"]
+      except KeyError as e:
+         print("you missed an attribute")
+         print("error %s" % (e))
+         quit()
+
+state = RobotState()
+
+@app.route(server_route, methods=["GET", "POST"])
+def main_endpoint():
    if (request.method == "GET"):
       data = {
-         "stat": 200,
-         "man": True,
-         "Stuff": "st"
+         "forward/back": state.lmotors,
+         "right/left": 0,
       }
       response = make_response(jsonify(data))
       response.headers["Access-Control-Allow-Origin"] = "*"
       return response
+   elif (request.method == "POST"):
+      print(state.__dict__)
+      response = make_response("Ok")
+      response.headers["Access-Control-Allow-Origin"] = "http://127.0.0.1:5500"
+      return response
 
 if __name__ == '__main__':
-   app.run(debug=True)
+   app.run(debug=True, host=server_host, port=server_port)

@@ -37,9 +37,7 @@ class RPI_output:
 					GPIO.output(25,1)
 					# This is to lift the bucket
 				while 6 >= int(sys.argv[1]) >= 5:
-					Hz = (float(sys.argv[1]) - 5)
-					pgp.set_PWM_dutycycle(12, (1000000 * Hz))
-					pgp.set_PWM_dutycycle(13, abs(1000000 - (1000000 * Hz)))
+					#Hz = (float(sys.argv[1]) - 5)
 					GPIO.PWM(12,60)
 					GPIO.PWM(13,60)
 					# This is PWM for the wheels
