@@ -13,7 +13,7 @@ class RPI_output:
 	def __init__(self):
 		GPIO.setmode(GPIO.BCM)
 
-		for pin in [4, 5, 27, 25]:
+		for pin in [4, 5, 27, 25, 12, 13]:
 			GPIO.setup(pin, GPIO.OUT)
 
 		
