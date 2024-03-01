@@ -12,13 +12,13 @@ import json
 class RPI_output:
 	def __init__(self):
 		GPIO.setmode(GPIO.BCM)
-		
 		GPIO.setup(12, GPIO.OUT)
 		GPIO.setup(13, GPIO.OUT)
+		self.pin1 = GPIO.PWM(12,60)
+		self.pin2 = GPIO.PWM(13,60)
+
 		for pin in [4, 5, 27, 25]:
 			GPIO.setup(pin, GPIO.OUT)
-
-		
 	
 	def main_loop(self):
 		try:
@@ -37,15 +37,15 @@ class RPI_output:
 					# This is to lift the bucket
 				while 6 >= int(sys.argv[1]) >= 5:
 					#Hz = (float(sys.argv[1]) - 5)
-					pin1 = GPIO.PWM(12,60)
-					pin2 = GPIO.PWM(13,60)
-
-					pin1.start(50)
-					pin2.start(50)
+					
+					self.pin1.start(50)
+					self.pin2.start(50)
 					# This is PWM for the wheels
 					# range (0-1000000) for duty cycle
-				
+					print(self.pin1)
 		except KeyboardInterrupt as e:
+			self.pin1.stop()
+			self.pin2.stop()
 			GPIO.cleanup()
 			print('ports cleaned')
 			print('closing program')
