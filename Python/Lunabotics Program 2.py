@@ -5,10 +5,7 @@ Created on Wed Feb  7 19:47:06 2024
 @author: Corin
 """
 import sys
-# from time import sleep
 import RPi.GPIO as GPIO
-# import keyboard
-import pigpio as pgp
 import requests
 import json
 
@@ -38,8 +35,11 @@ class RPI_output:
 					# This is to lift the bucket
 				while 6 >= int(sys.argv[1]) >= 5:
 					#Hz = (float(sys.argv[1]) - 5)
-					GPIO.PWM(12,60)
-					GPIO.PWM(13,60)
+					pin1 = GPIO.PWM(12,60)
+					pin2 = GPIO.PWM(13,60)
+
+					pin1.start(50)
+					pin2.start(50)
 					# This is PWM for the wheels
 					# range (0-1000000) for duty cycle
 				
