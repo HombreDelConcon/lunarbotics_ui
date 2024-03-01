@@ -12,8 +12,10 @@ import json
 class RPI_output:
 	def __init__(self):
 		GPIO.setmode(GPIO.BCM)
-
-		for pin in [4, 5, 27, 25, 12, 13]:
+		
+		GPIO.setup(12, GPIO.OUT)
+		GPIO.setup(13, GPIO.OUT)
+		for pin in [4, 5, 27, 25]:
 			GPIO.setup(pin, GPIO.OUT)
 
 		
