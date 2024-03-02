@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, Response, make_response
 from flask_cors import CORS
+import json
 
 app = Flask(__name__)
 CORS(app=app)
@@ -29,12 +30,12 @@ class RobotState:
       try:
          self.rmotors = attributes["rmotors"]
          self.lmotors = attributes["lmotors"]
-         self.le_motor = attributes["lemotors"]
-         self.bin_motor = attributes["binmotor"]
-         self.le_speed = attributes["lespeed"]
-         self.lr_motor_speed = attributes["lrspeed"]
-         self.back_act = attributes["backact"]
-         self.front_act = attributes["frontact"]
+         self.le_motor = attributes["le_motors"]
+         self.bin_motor = attributes["bin_motors"]
+         self.le_speed = attributes["le_speed"]
+         self.lr_motor_speed = attributes["lr_speed"]
+         self.back_act = attributes["back_act"]
+         self.front_act = attributes["front_act"]
       except KeyError as e:
          print("you missed an attribute")
          print("error %s" % (e))
@@ -53,9 +54,13 @@ def main_endpoint():
       response.headers["Access-Control-Allow-Origin"] = "*"
       return response
    elif (request.method == "POST"):
-      print(state.__dict__)
+      data = request.get_json(force=True)
+      state.setAttributes(data)
+      print("Attributes set")
+      for k, v in state.__dict__.items():
+         print("%s : %s" % (k, v))
       response = make_response("Ok")
-      response.headers["Access-Control-Allow-Origin"] = "http://127.0.0.1:5500"
+      response.headers["Access-Control-Allow-Origin"] = origin
       return response
 
 if __name__ == '__main__':

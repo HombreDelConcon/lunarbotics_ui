@@ -1,11 +1,32 @@
-var game_loop;
+//Keep track of how many parts are moving. As more buttons are pressed on the controller, 
+//  this number increases. If you release them, it decreases. 
 var moving_parts_count;
+
+//This is just some workaround to an issue with the UI. As time went, the interface go slower
+//  until it was unusable. The issue got fixed as soon as you clicked on the screen. To fix
+//  this, a random click onto the screen was implemented to keep focus on the UI and prevent it
+//  from slowing down. Each iteration of the loop, this number increases by 1. When c % 100 == 0,
+//  then click on the screen. 
 var c = 0;
+
+//Keep track of last time a GET or POST request was made
 var last_request_GET = new Date()
-var last_request_POST = new Date().getMilliseconds();
-console.log(last_request_GET);
-console.log(last_request_POST);
+var last_request_POST = new Date();
+
+//Server URL
 var server = "http://127.0.0.1:5000/test";
+
+//Map wchich will be jsonified and sent the server. When a button is pressed, a corresponding
+//  key's value is changed. 
+var json = {'lmotors': 0, 
+            'rmotors': 0, 
+            'le_motors': 0, 
+            'bin_motors': 0, 
+            'le_speed': 1, 
+            'lr_speed': 1, 
+            'back_act': 0, 
+            'front_act': 0
+        };
 
 function main() {
     window.addEventListener("gamepadconnected", (e) => {
@@ -16,11 +37,11 @@ function main() {
             e.gamepad.buttons.length,
             e.gamepad.axes.length
         );
-        game_loop = setInterval(GameLoop, 50);
+        setInterval(loop, 50);
     });
 }
 
-function GameLoop() {
+function loop() {
     if (c%100 == 0){
         RandomClick();
     }
@@ -37,52 +58,44 @@ function GameLoop() {
             if (buttons[i].pressed == true) { console.log("buttons[%s] pressed", i); };
         };
         var moving_parts_count = 0;
-        //If user presses RB, move forward
-        if (buttons[5].pressed){
-            console.log("forward");
-            MoveForward(true);
-            moving_parts_count++;
-            getData();
-        } else {
-            MoveForward(false);
-        }
         
-        //If user presses LB, move back
-        if (buttons[4].pressed){
-            console.log("Back");
-            MoveBack(true);
+        //If user presses A, retract front linear actuator. If user pressed X, retract 
+        //  front linear actuator
+        if (buttons[0].pressed || buttons[2].pressed){
+            buttons[0].pressed 
+                ? ActivateFrontLinActs(true, -1)
+                : ActivateFrontLinActs(true, 1);
             moving_parts_count++;
         } else {
-            MoveBack(false);
-        }
-        
-        //If user presses A, activate excavator
-        if (buttons[0].pressed){
-            console.log("Left");
-            ActivateExcavator(true);
-            moving_parts_count++;
-        } else {
-            ActivateExcavator(false);
+            ActivateFrontLinActs(false, 0);
         }
 
-        //If user presses B, activate bin
-        if (buttons[1].pressed){
-            console.log("right");
-            ActivateBin(true);
+        //If user presses B, retract back linear actuator. If user presses Y, extend
+        //  back linear actuator
+        if (buttons[1].pressed || buttons[3].pressed){
+            buttons[1].pressed
+                ? ActivateBackLinActs(true, -1)
+                : ActivateBackLinActs(true, 1);
             moving_parts_count++;
         } else {
-            ActivateBin(false);
+            ActivateBackLinActs(false, 0);
         }
     } 
     var moving_parts = document.getElementById("moving-part");
     moving_parts.innerHTML = moving_parts_count;
+    c++;
+    
 }
 
 const pressed_color = "#ee8282";
 const unpressed_color = "transparent";
 
-function MoveForward(isPressed){
+function ActivateLeftMotors(isPressed, direction){
+    if (direction > 1 || direction < -1){
+        throw Error("The value for the direction of the motor cannot be greater than 1 or less than -1");
+    }
     var part = document.getElementById("motor1");
+    json["lmotors"] = direction;
     if (isPressed == true){
         part.style.backgroundColor = pressed_color;
     } else {
@@ -90,8 +103,12 @@ function MoveForward(isPressed){
     }
 }
 
-function MoveBack(isPressed){
+function ActivateRightMotors(isPressed, direction){
+    if (direction > 1 || direction < -1){
+        throw Error("The value for the direction of the motor cannot be greater than 1 or less than -1");
+    }
     var part = document.getElementById("motor2");
+    json["rmotors"] = direction;
     if (isPressed == true){
         part.style.backgroundColor = pressed_color;
     } else {
@@ -99,8 +116,12 @@ function MoveBack(isPressed){
     }
 }
 
-function ActivateExcavator(isPressed){
-    var part = document.getElementById("excavator");
+function ActivateFrontLinActs(isPressed, direction){
+    if (direction > 1 || direction < -1){
+        throw Error("The value for the direction of the motor cannot be greater than 1 or less than -1");
+    }
+    var part = document.getElementById("front-act");
+    json["front_act"] = direction;
     if (isPressed == true){
         part.style.backgroundColor = pressed_color;
     } else {
@@ -108,8 +129,12 @@ function ActivateExcavator(isPressed){
     }
 }
 
-function ActivateBin(isPressed){
-    var part = document.getElementById("bin");
+function ActivateBackLinActs(isPressed, direction){
+    if (direction > 1 || direction < -1){
+        throw Error("The value for the direction of the motor cannot be greater than 1 or less than -1");
+    }
+    var part = document.getElementById("back-act");
+    json["back_act"] = direction;
     if (isPressed == true){
         part.style.backgroundColor = pressed_color;
     } else {
@@ -132,7 +157,6 @@ function getData(){
         xhr.open("GET", "https://regres.in/api/users");
         xhr.send();
         console.log("request send");
-        
     }
 }
 
@@ -175,7 +199,7 @@ function buttonOnclickPost() {
         var data = {"forward/back": 0,"right/left": 1,};
         xhr.open("POST", server, true);
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xhr.send(JSON.stringify(data));
+        xhr.send(JSON.stringify(json));
         console.log("request sent to python server");
         last_request_POST = new Date();
     }

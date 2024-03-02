@@ -9,6 +9,10 @@ import RPi.GPIO as GPIO
 import requests
 import json
 
+url = str(input("Input the URL of the host of the server"))
+if url == "":
+	url = "http://127.0.0.1:5000/test"
+
 class RPI_output:
 	def __init__(self):
 		GPIO.setmode(GPIO.BCM)
@@ -42,7 +46,6 @@ class RPI_output:
 					self.pin2.start(50)
 					# This is PWM for the wheels
 					# range (0-1000000) for duty cycle
-					print(self.pin1)
 		except KeyboardInterrupt as e:
 			self.pin1.stop()
 			self.pin2.stop()
