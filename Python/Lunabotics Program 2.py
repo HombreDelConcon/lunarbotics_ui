@@ -5,7 +5,7 @@ Created on Wed Feb  7 19:47:06 2024
 @author: Corin
 """
 import sys
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import requests
 import json
 
@@ -16,23 +16,6 @@ if url == "":
 dc = int(input("Duty cycle:\n"))
 if dc < 0 or dc > 100:
 	raise BaseException("Number not valid dutycycle")
-
-class GPIO:
-	def __init__(self):
-		self.BCM = 0
-		self.OUT = 0
-	def setup(self, n, s):
-		def stop(self):
-			return
-		return
-	def setmode(self, s):
-		return
-	def PWM(self, s, d):
-		return
-	def output(self, e, f):
-		return
-	def cleanup():
-		return
 
 class RPI_output:
 	def __init__(self):
