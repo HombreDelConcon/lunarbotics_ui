@@ -13,6 +13,9 @@ var c = 0;
 var last_request_GET = new Date();
 var last_request_POST = new Date();
 
+var last_R3_press = new Date();
+var last_L3_press = new Date();
+
 
 //Server URL
 var server;
@@ -128,16 +131,54 @@ function loop() {
         //If user presses L3, increase excavator speed. If user presses R3, derease excavator 
         //  speed
         if (buttons[10].pressed || buttons[11].pressed){
-            buttons[10].pressed
-                ? ChangeExcavatorSpeed(true)
-                : ChangeExcavatorSpeed(false);
-            moving_parts_count++;
+            const new_press = new Date();
+            if (last_L3_press - new_press > 500 || last_R3_press - new_press > 500){
+                if (button[10].pressed){
+                    ChangeExcavatorSpeed(true);
+                    last_L3_press = new Date();
+                } else if (button[11].pressed){
+                    ChangeExcavatorSpeed(false);
+                    last_R3_press = new Date();
+                } 
+                moving_parts_count++;
+            }
+        }
+
+        //If user presses D-Pad up, move forward. If user presses D-Pad down, move back
+        if (buttons[12].pressed || buttons[13].pressed){
+            if (buttons[12].pressed){
+                ActivateLeftMotors(true, 1);
+                ActivateRightMotors(true, 1);
+            } else if (buttons[13].pressed){
+                ActivateLeftMotors(true, -1);
+                ActivateRightMotors(true, -1);
+            } else if (!(buttons[12].isPressed || buttons[13].isPressed)) {
+                ActivateLeftMotors(false, 0);
+                ActivateRightMotors(false, 0);
+            }
+            moving_parts_count = moving_parts_count + 2;
+        }
+
+        //If user presses D-Left up, rotate left. If user presses D-Right down, rotate
+        //  right
+        if (buttons[14].pressed || buttons[15].pressed){
+            if (buttons[14].pressed){
+                ActivateLeftMotors(true, -1);
+                ActivateRightMotors(true, 1);
+            } else if (buttons[15].pressed){
+                ActivateLeftMotors(true, 1);
+                ActivateRightMotors(true, -1);
+            } else if (!(buttons[14].isPressed || buttons[15].isPressed)) {
+                ActivateLeftMotors(false, 0);
+                ActivateRightMotors(false, 0);
+            }
+            moving_parts_count = moving_parts_count + 2;
         }
     } 
     var moving_parts = document.getElementById("moving-part");
     moving_parts.innerHTML = moving_parts_count;
     c++;
-    
+
 }
 
 const pressed_color = "#ee8282";

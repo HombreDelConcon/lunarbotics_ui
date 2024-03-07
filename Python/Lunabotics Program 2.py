@@ -5,13 +5,34 @@ Created on Wed Feb  7 19:47:06 2024
 @author: Corin
 """
 import sys
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 import requests
 import json
 
 url = str(input("Input the URL of the host of the server"))
 if url == "":
 	url = "http://127.0.0.1:5000/test"
+
+dc = int(input("Duty cycle:\n"))
+if dc < 0 or dc > 100:
+	raise BaseException("Number not valid dutycycle")
+
+class GPIO:
+	def __init__(self):
+		self.BCM = 0
+		self.OUT = 0
+	def setup(self, n, s):
+		def stop(self):
+			return
+		return
+	def setmode(self, s):
+		return
+	def PWM(self, s, d):
+		return
+	def output(self, e, f):
+		return
+	def cleanup():
+		return
 
 class RPI_output:
 	def __init__(self):
@@ -27,6 +48,7 @@ class RPI_output:
 	def main_loop(self):
 		try:
 			while True:
+				json = self.send_request()
 				while int(sys.argv[1]) == 1:
 					GPIO.output(4,1)
 					# This is to run the motor on the raised bit
@@ -41,9 +63,8 @@ class RPI_output:
 					# This is to lift the bucket
 				while 6 >= int(sys.argv[1]) >= 5:
 					#Hz = (float(sys.argv[1]) - 5)
-					
-					self.pin1.start(50)
-					self.pin2.start(50)
+					self.pin1.start(dc)
+					self.pin2.start(dc)
 					# This is PWM for the wheels
 					# range (0-1000000) for duty cycle
 		except KeyboardInterrupt as e:
@@ -54,6 +75,7 @@ class RPI_output:
 			print('closing program')
 	
 	def send_request(self):
+		json_data = None
 		try:
 			resp = requests.get(url)
 			print("Status code: " + str(resp.status_code))
@@ -62,9 +84,10 @@ class RPI_output:
 		except requests.exceptions.ConnectionError as e:
 			print("Could not connect")
 		except KeyError as f:
-			print("You have provided an invalid key")			
+			print("You have provided an invalid key")		
+		else:
+			return json_data
 
 if __name__ == "__main__":
 	pi = RPI_output()
 	pi.main_loop()
-	# pi.send_request()
