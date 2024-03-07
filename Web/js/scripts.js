@@ -10,11 +10,17 @@ var moving_parts_count;
 var c = 0;
 
 //Keep track of last time a GET or POST request was made
-var last_request_GET = new Date()
+var last_request_GET = new Date();
 var last_request_POST = new Date();
 
+
 //Server URL
-var server = "http://127.0.0.1:5000/test";
+var server;
+
+document.addEventListener("DOMContentLoaded", function() {
+    server = document.getElementsByName("serv_host")[0];
+    console.log(server.value);
+});
 
 //Map wchich will be jsonified and sent the server. When a button is pressed, a corresponding
 //  key's value is changed. 
@@ -287,10 +293,11 @@ function buttonOnclickGet() {
     console.log("GET");
     let req_time = new Date();
     console.log(req_time - last_request_GET);
+    console.log(server.value);
 
     if (req_time - last_request_GET > 500){
         const xhr = new XMLHttpRequest();
-        xhr.open("GET", server, true);
+        xhr.open("GET", server.value, true);
         xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
@@ -318,7 +325,7 @@ function buttonOnclickPost() {
     if (req_time - last_request_POST > 500){
         const xhr = new XMLHttpRequest();
         var data = {"forward/back": 0,"right/left": 1,};
-        xhr.open("POST", server, true);
+        xhr.open("POST", server.value, true);
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xhr.send(JSON.stringify(json));
         console.log("request sent to python server");
