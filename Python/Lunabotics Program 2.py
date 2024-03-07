@@ -8,6 +8,7 @@ import sys
 import RPi.GPIO as GPIO
 import requests
 import json
+from time import sleep
 
 url = str(input("Input the URL of the host of the server"))
 if url == "":
@@ -46,6 +47,9 @@ class RPI_output:
 					# This is to lift the bucket
 				while 6 >= int(sys.argv[1]) >= 5:
 					#Hz = (float(sys.argv[1]) - 5)
+					self.pin1.start(0)
+					self.pin2.start(0)
+					sleep(3)
 					self.pin1.start(dc)
 					self.pin2.start(dc)
 					# This is PWM for the wheels
