@@ -18,15 +18,23 @@ var server = "http://127.0.0.1:5000/test";
 
 //Map wchich will be jsonified and sent the server. When a button is pressed, a corresponding
 //  key's value is changed. 
-var json = {'lmotors': 0, 
-            'rmotors': 0, 
-            'le_motors': 0, 
-            'bin_motors': 0, 
-            'le_speed': 1, 
-            'lr_speed': 1, 
-            'back_act': 0, 
-            'front_act': 0
-        };
+var json = 
+    {
+        'lmotors': 0, 
+        'rmotors': 0, 
+        'le_motors': 0, 
+        'bin_motors': 0, 
+        'le_speed': 1, 
+        'lr_speed': 1, 
+        'back_act': 0, 
+        'front_act': 0
+    };
+
+//Keep track of the speed of the wheel motors. Min(1), Max(4)
+var motor_speed = 1;
+
+//Keep track of the speed of the linear excavator motor. Min(1), Max(4)
+var excavator_speed = 1;
 
 function main() {
     window.addEventListener("gamepadconnected", (e) => {
@@ -80,6 +88,45 @@ function loop() {
         } else {
             ActivateBackLinActs(false, 0);
         }
+
+        //If user presses LB, linear excavator moves forward. If user presses LT, linear
+        //  excavator moves backwards. 
+        if (buttons[4].pressed || buttons[6].pressed){
+            buttons[4].pressed
+                ? ActivateLinExc(true, 1)
+                : ActivateLinExc(true, -1);
+            moving_parts_count++;
+        } else {
+            ActivateLinExc(false, 0);
+        }
+
+        //If user presses RB, bin actuators extend. If user presses RT, bin actuators
+        //  retract
+        if (buttons[5].pressed || buttons[7].pressed){
+            buttons[5].pressed
+                ? ActivateLinExc(true, 1)
+                : ActivateLinExc(true, -1);
+            moving_parts_count++;
+        } else {
+            ActivateLinExc(false, 0);
+        }
+
+        //If user presses select, increase speed. If user presses pause, derease speed
+        if (buttons[8].pressed || buttons[9].pressed){
+            buttons[8].pressed
+                ? ChangeMotorsSpeed(true)
+                : ChangeMotorsSpeed(false);
+            moving_parts_count++;
+        }
+
+        //If user presses L3, increase excavator speed. If user presses R3, derease excavator 
+        //  speed
+        if (buttons[10].pressed || buttons[11].pressed){
+            buttons[10].pressed
+                ? ChangeExcavatorSpeed(true)
+                : ChangeExcavatorSpeed(false);
+            moving_parts_count++;
+        }
     } 
     var moving_parts = document.getElementById("moving-part");
     moving_parts.innerHTML = moving_parts_count;
@@ -89,6 +136,8 @@ function loop() {
 
 const pressed_color = "#ee8282";
 const unpressed_color = "transparent";
+const colored_bar = "red";
+const uncolored_bar = "aliceblue";
 
 function ActivateLeftMotors(isPressed, direction){
     if (direction > 1 || direction < -1){
@@ -140,6 +189,78 @@ function ActivateBackLinActs(isPressed, direction){
     } else {
         part.style.backgroundColor = unpressed_color;
     }
+}
+
+function ActivateLinExc(isPressed, direction){
+    if (direction > 1 || direction < -1){
+        throw Error("The value for the direction of the motor cannot be greater than 1 or less than -1");
+    }
+    var part = document.getElementById("excavator");
+    json["le_motors"] = direction;
+    if (isPressed == true){
+        part.style.backgroundColor = pressed_color;
+    } else {
+        part.style.backgroundColor = unpressed_color;
+    }
+}
+
+function ActivateBinActs(isPressed, direction){
+    if (direction > 1 || direction < -1){
+        throw Error("The value for the direction of the motor cannot be greater than 1 or less than -1");
+    }
+    var part = document.getElementById("bin");
+    json["bin_motors"] = direction;
+    if (isPressed == true){
+        part.style.backgroundColor = pressed_color;
+    } else {
+        part.style.backgroundColor = unpressed_color;
+    }
+}
+
+function ChangeMotorsSpeed(isIncreased){
+    if (isIncreased){
+        if (motor_speed < 4){
+            motor_speed++;
+        } 
+    } else {
+        if (motor_speed > 1){
+            motor_speed--;
+        }
+    }
+
+    for (let j = 1; j <= 4; j++){
+        bar = document.getElementById("sbm" + String(j));
+        bar.style.backgroundColor = uncolored_bar
+    }
+
+    for (let i = 1; i <= motor_speed; i++){
+        bar = document.getElementById("sbm" + String(i));
+        bar.style.backgroundColor = colored_bar;
+    }
+    json["lr_speed"] = motor_speed;
+}
+
+function ChangeExcavatorSpeed(isIncreased){
+    if (isIncreased){
+        if (motor_speed < 4){
+            motor_speed++;
+        } 
+    } else {
+        if (motor_speed > 1){
+            motor_speed--;
+        }
+    }
+
+    for (let j = 1; j <= 4; j++){
+        bar = document.getElementById("sba" + String(j));
+        bar.style.backgroundColor = uncolored_bar
+    }
+
+    for (let i = 1; i <= motor_speed; i++){
+        bar = document.getElementById("sba" + String(i));
+        bar.style.backgroundColor = colored_bar;
+    }
+    json["le_speed"] = motor_speed;
 }
 
 function RandomClick(){

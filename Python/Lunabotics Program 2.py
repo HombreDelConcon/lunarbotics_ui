@@ -54,12 +54,11 @@ class RPI_output:
 			print('closing program')
 	
 	def send_request(self):
-		url = "http://127.0.0.1:5000/test"
 		try:
 			resp = requests.get(url)
 			print("Status code: " + str(resp.status_code))
 			json_data = json.loads(resp.content)
-			print(json_data["Stuf"])
+			print(json_data)
 		except requests.exceptions.ConnectionError as e:
 			print("Could not connect")
 		except KeyError as f:

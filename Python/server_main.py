@@ -5,7 +5,7 @@ import json
 app = Flask(__name__)
 CORS(app=app)
 
-origin = str(input("type out the origin's URL:\n"))
+origin = str(input("type out the origin's URL (hint: it's the url on the browser for where the UI is running):\n"))
 if origin == "":
    origin = "http://127.0.0.1:5500"
    print("Origin set to default of localhost on port 5500")
@@ -46,10 +46,7 @@ state = RobotState()
 @app.route(server_route, methods=["GET", "POST"])
 def main_endpoint():
    if (request.method == "GET"):
-      data = {
-         "forward/back": state.lmotors,
-         "right/left": 0,
-      }
+      data = state.__dict__
       response = make_response(jsonify(data))
       response.headers["Access-Control-Allow-Origin"] = "*"
       return response
