@@ -50,8 +50,8 @@ class RPI_output:
 					self.pin1.start(0)
 					self.pin2.start(0)
 					sleep(3)
-					self.pin1.start(dc)
-					self.pin2.start(dc)
+					self.pin1.ChangeDutyCycle(50)
+					self.pin2.ChangeDutyCycle(50)
 					# This is PWM for the wheels
 					# range (0-1000000) for duty cycle
 		except KeyboardInterrupt as e:
