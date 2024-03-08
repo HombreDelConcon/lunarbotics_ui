@@ -23,8 +23,8 @@ class RPI_output:
 		GPIO.setmode(GPIO.BCM)
 		GPIO.setup(12, GPIO.OUT)
 		GPIO.setup(13, GPIO.OUT)
-		self.pin1 = GPIO.PWM(12,60)
-		self.pin2 = GPIO.PWM(13,60)
+		self.pin1 = GPIO.PWM(12,100)
+		self.pin2 = GPIO.PWM(13,100)
 
 		for pin in [4, 5, 27, 25]:
 			GPIO.setup(pin, GPIO.OUT)
@@ -45,13 +45,16 @@ class RPI_output:
 				while int(sys.argv[1]) == 4:
 					GPIO.output(25,1)
 					# This is to lift the bucket
-				while 6 >= int(sys.argv[1]) >= 5:
+				while int(sys.argv[1]) in [5, 6]:
+					print("starting pwm")
 					#Hz = (float(sys.argv[1]) - 5)
-					self.pin1.start(0)
-					self.pin2.start(0)
+					self.pin1.start(100)
+					self.pin2.start(100)
 					sleep(3)
 					self.pin1.ChangeDutyCycle(50)
 					self.pin2.ChangeDutyCycle(50)
+
+					sleep(3)
 					# This is PWM for the wheels
 					# range (0-1000000) for duty cycle
 		except KeyboardInterrupt as e:
