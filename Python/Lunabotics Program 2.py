@@ -1,62 +1,87 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Feb  7 19:47:06 2024
-
-@author: Corin
-"""
 import sys
 import RPi.GPIO as GPIO
 import requests
 import json
 from time import sleep
 
+#For test, the following pins will be mapped to the follwing keys
+#	 4: lmotors - Left motors
+#	 5: rmotors - Right motors
+#	12: le_motors - Linear excavator speed
+#	13: bin_motors - Left & right motors speed
+#	25: back_act - Back linear actuator
+#	27: front_act - Front linear actuator
+
+
 url = str(input("Input the URL of the host of the server"))
 if url == "":
 	url = "http://127.0.0.1:5000/test"
 
+#Define duty cycle. Must be between 1 and 99 inclusive.
 dc = int(input("Duty cycle:\n"))
-if dc < 0 or dc > 100:
+if dc < 1 or dc > 99:
 	raise BaseException("Number not valid dutycycle")
 
+conversion_constant = 5 / 3.3
+
+class JSONError(Exception):
+	pass
+
 class RPI_output:
+
+	#initialize all pins
 	def __init__(self):
 		GPIO.setmode(GPIO.BCM)
 		GPIO.setup(12, GPIO.OUT)
 		GPIO.setup(13, GPIO.OUT)
+		GPIO.setup(18, GPIO.OUT)
 		self.pin1 = GPIO.PWM(12,100)
 		self.pin2 = GPIO.PWM(13,100)
+		self.pin3 = GPIO.PWN(18, 100)
 
 		for pin in [4, 5, 27, 25]:
 			GPIO.setup(pin, GPIO.OUT)
 	
 	def main_loop(self):
+							
 		try:
 			while True:
+				#UI control data in JSON format
 				json = self.send_request()
+
+				#Test that all keys exist in the response and that they are within the expected range
+				#	I'm stupid and will end up sending some bogus at some point so this will protect
+				#	the robot... from me.
+				for key in ["lmotors", "rmotors", "le_motors", "bin_motors", "le_speed", "lr_speed", "back_act", "front_act"]:
+					try:
+						json[key]
+					except KeyError:
+						print("Key %s does not exist" % (key))
+						quit()
+					else:
+						if key not in ["le_speed", "lr_speed"]:
+							if not (-1 <= json[key] <= 1):
+								raise JSONError("Value for json is not valid\nKey: %s\nValue: %d" % (key, json[key]))
+				
+				
+
 				while int(sys.argv[1]) == 1:
 					GPIO.output(4,1)
-					# This is to run the motor on the raised bit
 				while int(sys.argv[1]) == 2:
 					GPIO.output(5,1)
-					# This is to lift the raised bit (front)
 				while int(sys.argv[1]) == 3:
 					GPIO.output(27,1)
-					# This is to lift the raised bit (back)
 				while int(sys.argv[1]) == 4:
 					GPIO.output(25,1)
-					# This is to lift the bucket
 				while int(sys.argv[1]) in [5, 6]:
 					print("starting pwm")
-					#Hz = (float(sys.argv[1]) - 5)
-					self.pin1.start(100)
-					self.pin2.start(100)
+					self.pin1.start(50)
+					self.pin2.start(50)
 					sleep(3)
-					self.pin1.ChangeDutyCycle(50)
-					self.pin2.ChangeDutyCycle(50)
+					self.pin1.ChangeDutyCycle(dc)
+					self.pin2.ChangeDutyCycle(dc)
+					sleep(3)
 
-					sleep(3)
-					# This is PWM for the wheels
-					# range (0-1000000) for duty cycle
 		except KeyboardInterrupt as e:
 			self.pin1.stop()
 			self.pin2.stop()
@@ -77,7 +102,26 @@ class RPI_output:
 			print("You have provided an invalid key")		
 		else:
 			return json_data
+	def test(self):
+		print("starting pwm")
+		self.pin1.start(50 * conversion_constant)
+		self.pin2.start(50 * conversion_constant)
+		self.pin3.start(50 * conversion_constant)
+		while True:
+			try:
+				sleep(3)
+				print("changing signal")
+				self.pin1.ChangeDutyCycle(25)
+				#self.pin2.ChangeDutyCycle(25)
+				sleep(3)
+			except KeyboardInterrupt:
+				self.pin1.stop()
+				self.pin2.stop()
+				self.pin3.stop()
+				GPIO.cleanup()
+				print('ports cleaned')
+				print('closing program')
 
 if __name__ == "__main__":
 	pi = RPI_output()
-	pi.main_loop()
+	pi.test()
