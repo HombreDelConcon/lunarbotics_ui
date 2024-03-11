@@ -116,10 +116,9 @@ class RPI_output:
 				sleep(5)
 				print("changing signal")
 				self.pin3.ChangeDutyCycle(50 * conversion_constant)
-				self.pin1.ChangeDutyCycle(100 * conversion_constant)				
-				sleep(3)
+				self.pin1.ChangeDutyCycle(65 * conversion_constant)				
+				sleep(5)
 				self.pin1.ChangeDutyCycle(0 * conversion_constant)
-				sleep(3)
 		except KeyboardInterrupt:
 			self.pin1.stop()
 			self.pin2.stop()
