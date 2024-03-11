@@ -35,15 +35,20 @@ class RPI_output:
 		GPIO.setup(12, GPIO.OUT)
 		GPIO.setup(13, GPIO.OUT)
 		GPIO.setup(18, GPIO.OUT)
+		GPIO.setup(4, GPIO.OUT)
+		GPIO.setup(5, GPIO.OUT)
+		GPIO.setup(27, GPIO.OUT)
+		GPIO.setup(25, GPIO.OUT)
 		self.pin1 = GPIO.PWM(12,100)
 		self.pin2 = GPIO.PWM(13,100)
 		self.pin3 = GPIO.PWM(18, 100)
 
-		for pin in [4, 5, 27, 25]:
-			GPIO.setup(pin, GPIO.OUT)
-	
 	def main_loop(self):
-							
+		print("starting pwm")
+		self.pin1.start(0 * conversion_constant)
+		self.pin2.start(50 * conversion_constant)
+		self.pin3.start(0 * conversion_constant)
+
 		try:
 			while True:
 				#UI control data in JSON format
@@ -62,8 +67,6 @@ class RPI_output:
 						if key not in ["le_speed", "lr_speed"]:
 							if not (-1 <= json[key] <= 1):
 								raise JSONError("Value for json is not valid\nKey: %s\nValue: %d" % (key, json[key]))
-				
-				
 
 				while int(sys.argv[1]) == 1:
 					GPIO.output(4,1)
@@ -85,6 +88,7 @@ class RPI_output:
 		except KeyboardInterrupt as e:
 			self.pin1.stop()
 			self.pin2.stop()
+			self.pin3.stop()
 			GPIO.cleanup()
 			print('ports cleaned')
 			print('closing program')
@@ -111,9 +115,10 @@ class RPI_output:
 			while True:
 				sleep(5)
 				print("changing signal")
-				#self.pin1.ChangeDutyCycle(25)
 				self.pin3.ChangeDutyCycle(50 * conversion_constant)
-				#self.pin2.ChangeDutyCycle(25)				
+				self.pin1.ChangeDutyCycle(100 * conversion_constant)				
+				sleep(3)
+				self.pin1.ChangeDutyCycle(0 * conversion_constant)
 				sleep(3)
 		except KeyboardInterrupt:
 			self.pin1.stop()

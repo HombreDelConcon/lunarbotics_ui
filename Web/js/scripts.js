@@ -19,12 +19,20 @@ var last_le_speed_change = new Date();
 //Keep track of the last time the left and right wheel motors speed was changed
 var last_lr_speed_change = new Date();
 
-
 //Server URL
 var server;
 
+//The size of the packets sent has been measured at a constant of 226 bytes.
+//  This does not change no matter how many inputs are pressed.
+const packet_size = 226;
+var data_sent;
+
+//Wait for the content in the DOM tree to load before searching for the input bar with the server
+//  name because for some reason, it tries really hard to get it when the DOM is not even loaded
+//  yet. 
 document.addEventListener("DOMContentLoaded", function() {
     server = document.getElementsByName("serv_host")[0];
+    data_sent = Number(document.getElementById("data_sent").innerHTML);
     console.log(server.value);
 });
 
@@ -141,23 +149,19 @@ function loop() {
         }
 
         //If user presses D-Pad up, move forward. If user presses D-Pad down, move back
-        if (buttons[12].pressed || buttons[13].pressed){ 
+        if (buttons[12].pressed || buttons[13].pressed){
             if (buttons[12].pressed){
                 ActivateLeftMotors(true, 1);
                 ActivateRightMotors(true, 1);
-            } else if (buttons[13].pressed){
+            } else {
                 ActivateLeftMotors(true, -1);
                 ActivateRightMotors(true, -1);
-            } 
+            }
             moving_parts_count = moving_parts_count + 2;
-        } else {
-            ActivateLeftMotors(false, 0);
-            ActivateRightMotors(false, 0);
-        }
-
+        } 
         //If user presses D-pad left, rotate left. If user presses D-pad right, rotate
         //  right
-        if (buttons[14].pressed || buttons[15].pressed){
+        else if (buttons[14].pressed || buttons[15].pressed){
             if (buttons[14].pressed){
                 ActivateLeftMotors(true, -1);
                 ActivateRightMotors(true, 1);
@@ -169,10 +173,13 @@ function loop() {
         } else {
             ActivateLeftMotors(false, 0);
             ActivateRightMotors(false, 0);
+            json["lmotors"] = 0;
         }
     } 
     var moving_parts = document.getElementById("moving-part");
     moving_parts.innerHTML = moving_parts_count;
+    postData();
+    console.log(data_sent);
     c++;
 }
 
@@ -376,11 +383,12 @@ function postData() {
 
     if (req_time - last_request_POST > 500){
         const xhr = new XMLHttpRequest();
-        var data = {"forward/back": 0,"right/left": 1,};
         xhr.open("POST", server.value, true);
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xhr.send(JSON.stringify(json));
         console.log("request sent to python server");
         last_request_POST = new Date();
+        data_sent += packet_size;
+        document.getElementById("data_sent").innerHTML = data_sent / 1000;
     }
 }
