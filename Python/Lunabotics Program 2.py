@@ -22,7 +22,7 @@ dc = int(input("Duty cycle:\n"))
 if dc < 1 or dc > 99:
 	raise BaseException("Number not valid dutycycle")
 
-conversion_constant = 5 / 3.3
+conversion_constant = 5 / 3.2575
 
 class JSONError(Exception):
 	pass
@@ -37,7 +37,7 @@ class RPI_output:
 		GPIO.setup(18, GPIO.OUT)
 		self.pin1 = GPIO.PWM(12,100)
 		self.pin2 = GPIO.PWM(13,100)
-		self.pin3 = GPIO.PWN(18, 100)
+		self.pin3 = GPIO.PWM(18, 100)
 
 		for pin in [4, 5, 27, 25]:
 			GPIO.setup(pin, GPIO.OUT)
@@ -104,23 +104,24 @@ class RPI_output:
 			return json_data
 	def test(self):
 		print("starting pwm")
-		self.pin1.start(50 * conversion_constant)
+		self.pin1.start(0 * conversion_constant)
 		self.pin2.start(50 * conversion_constant)
-		self.pin3.start(50 * conversion_constant)
-		while True:
-			try:
-				sleep(3)
+		self.pin3.start(0 * conversion_constant)
+		try:
+			while True:
+				sleep(5)
 				print("changing signal")
-				self.pin1.ChangeDutyCycle(25)
-				#self.pin2.ChangeDutyCycle(25)
+				#self.pin1.ChangeDutyCycle(25)
+				self.pin3.ChangeDutyCycle(50 * conversion_constant)
+				#self.pin2.ChangeDutyCycle(25)				
 				sleep(3)
-			except KeyboardInterrupt:
-				self.pin1.stop()
-				self.pin2.stop()
-				self.pin3.stop()
-				GPIO.cleanup()
-				print('ports cleaned')
-				print('closing program')
+		except KeyboardInterrupt:
+			self.pin1.stop()
+			self.pin2.stop()
+			self.pin3.stop()
+			GPIO.cleanup()
+			print('ports cleaned')
+			print('closing program')
 
 if __name__ == "__main__":
 	pi = RPI_output()
