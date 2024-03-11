@@ -44,10 +44,18 @@ class RPI_output:
 		self.pin3 = GPIO.PWM(18, 100)
 
 	def main_loop(self):
-		print("starting pwm")
+		pwm_thresh_high = 65
+		pwm_thresh_low = 0
+
+		print("starting pwm...")
 		self.pin1.start(0 * conversion_constant)
 		self.pin2.start(50 * conversion_constant)
+		
+		#Calibrate driver board
 		self.pin3.start(0 * conversion_constant)
+		sleep(3)
+		print("done calibrating")
+		self.pin3.start(50 * conversion_constant)
 
 		try:
 			while True:
@@ -68,22 +76,23 @@ class RPI_output:
 							if not (-1 <= json[key] <= 1):
 								raise JSONError("Value for json is not valid\nKey: %s\nValue: %d" % (key, json[key]))
 
-				while int(sys.argv[1]) == 1:
-					GPIO.output(4,1)
-				while int(sys.argv[1]) == 2:
-					GPIO.output(5,1)
-				while int(sys.argv[1]) == 3:
-					GPIO.output(27,1)
-				while int(sys.argv[1]) == 4:
-					GPIO.output(25,1)
-				while int(sys.argv[1]) in [5, 6]:
-					print("starting pwm")
-					self.pin1.start(50)
-					self.pin2.start(50)
-					sleep(3)
-					self.pin1.ChangeDutyCycle(dc)
-					self.pin2.ChangeDutyCycle(dc)
-					sleep(3)
+				# while int(sys.argv[1]) == 1:
+				# 	GPIO.output(4,1)
+				# while int(sys.argv[1]) == 2:
+				# 	GPIO.output(5,1)
+				# while int(sys.argv[1]) == 3:
+				# 	GPIO.output(27,1)
+				# while int(sys.argv[1]) == 4:
+				# 	GPIO.output(25,1)
+				print(json["lmotors"])
+				if json["lmotors"] == 1:
+					self.pin1.ChangeDutyCycle(pwm_thresh_high * conversion_constant)				
+				elif json["lmotors"] == -1:
+					self.pin1.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
+				else:
+					self.pin1.ChangeDutyCycle(50 * conversion_constant)
+				sleep(1)
+				
 
 		except KeyboardInterrupt as e:
 			self.pin1.stop()
