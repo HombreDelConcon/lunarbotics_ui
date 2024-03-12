@@ -43,7 +43,14 @@ class RPI_output:
 		self.pin2 = GPIO.PWM(13,100)
 		self.pin3 = GPIO.PWM(18, 100)
 
-	def main_loop(self):
+	def main_loop(self) -> None:
+		#Speed is constrained to the max number we can multiply by the conversion 
+		#	constant and still be under 100. Since the highest speed level is 4 bars,
+		#	we divide it by 4.
+		speed_constant = 65 / 4
+		lr_speed_scalar = 1
+
+		#Threshold voltage
 		pwm_thresh_high = 65
 		pwm_thresh_low = 0
 
@@ -75,29 +82,31 @@ class RPI_output:
 						if key not in ["le_speed", "lr_speed"]:
 							if not (-1 <= json[key] <= 1):
 								raise JSONError("Value for json is not valid\nKey: %s\nValue: %d" % (key, json[key]))
+				
+				lr_speed_scalar = int(json["lr_speed"])
 
-				# while int(sys.argv[1]) == 1:
-				# 	GPIO.output(4,1)
-				# while int(sys.argv[1]) == 2:
-				# 	GPIO.output(5,1)
-				# while int(sys.argv[1]) == 3:
-				# 	GPIO.output(27,1)
-				# while int(sys.argv[1]) == 4:
-				# 	GPIO.output(25,1)
-				print(json["lmotors"])
-				if json["lmotors"] == 1:
-					self.pin3.ChangeDutyCycle(50 * conversion_constant)
+				if json["lmotors"] == 1 and json["rmotors"] == 1:
+					self.pin3.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
 					self.pin1.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
-					self.pin2.ChangeDutyCycle(pwn_thresh_low * conversion_constant)
-				elif json["lmotors"] == -1:
-					self.pin3.ChangeDutyCycle(50 * conversion_constant)
+					self.pin2.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
+				elif json["lmotors"] == -1 and json["rmotors"] == -1:
+					self.pin3.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
 					self.pin1.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
 					self.pin2.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
-				else:
+				elif json["lmotors"] == 0 and json["rmotors"] == 0:
 					self.pin3.ChangeDutyCycle(0)
-					self.pin1.ChangeDutyCycle(50 * conversion_constant)
-					self.pin2.ChangeDutyCycle(50 * conversion_constant)
-				sleep(1)
+					self.pin1.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
+					self.pin2.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
+				elif json["lmotors"] == 1 and json["rmotors"] == -1:
+					self.pin3.ChangeDutyCycle(50 * conversion_constant)
+					self.pin1.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
+					self.pin2.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
+				elif json["lmotors"] == -1 and json["rmotors"] == 1:
+					self.pin3.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
+					self.pin1.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
+					self.pin2.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
+
+				sleep(0.25)
 				
 
 		except KeyboardInterrupt as e:
@@ -129,8 +138,9 @@ class RPI_output:
 		try:
 			while True:
 				sleep(5)
-				print("changing signal")                                                                                                                                     				self.pin3.ChangeDutyCycle(50 * conversion_constant)
-				self.pin1.ChangeDutyCycle(65 * conversion_constant)				
+				print("changing signal")                                                                                                                				
+				self.pin3.ChangeDutyCycle(50 * conversion_constant)
+				self.pin1.ChangeDutyCycle(65 * conversion_constant)
 				sleep(5)
 				self.pin1.ChangeDutyCycle(0 * conversion_constant)
 		except KeyboardInterrupt:

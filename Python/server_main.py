@@ -30,10 +30,10 @@ class RobotState:
       try:
          self.rmotors = attributes["rmotors"]
          self.lmotors = attributes["lmotors"]
-         self.le_motor = attributes["le_motors"]
-         self.bin_motor = attributes["bin_motors"]
+         self.le_motors = attributes["le_motors"]
+         self.bin_motors = attributes["bin_motors"]
          self.le_speed = attributes["le_speed"]
-         self.lr_motor_speed = attributes["lr_speed"]
+         self.lr_speed = attributes["lr_speed"]
          self.back_act = attributes["back_act"]
          self.front_act = attributes["front_act"]
       except KeyError as e:
