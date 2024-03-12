@@ -15,7 +15,7 @@ from time import sleep
 
 url = str(input("Input the URL of the host of the server"))
 if url == "":
-	url = "http://127.0.0.1:5000/test"
+	url = "http://192.168.0.100:5000/test"
 
 #Define duty cycle. Must be between 1 and 99 inclusive.
 dc = int(input("Duty cycle:\n"))
@@ -86,11 +86,17 @@ class RPI_output:
 				# 	GPIO.output(25,1)
 				print(json["lmotors"])
 				if json["lmotors"] == 1:
-					self.pin1.ChangeDutyCycle(pwm_thresh_high * conversion_constant)				
+					self.pin3.ChangeDutyCycle(50 * conversion_constant)
+					self.pin1.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
+					self.pin2.ChangeDutyCycle(pwn_thresh_low * conversion_constant)
 				elif json["lmotors"] == -1:
+					self.pin3.ChangeDutyCycle(50 * conversion_constant)
 					self.pin1.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
+					self.pin2.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
 				else:
+					self.pin3.ChangeDutyCycle(0)
 					self.pin1.ChangeDutyCycle(50 * conversion_constant)
+					self.pin2.ChangeDutyCycle(50 * conversion_constant)
 				sleep(1)
 				
 
@@ -123,8 +129,7 @@ class RPI_output:
 		try:
 			while True:
 				sleep(5)
-				print("changing signal")
-				self.pin3.ChangeDutyCycle(50 * conversion_constant)
+				print("changing signal")                                                                                                                                     				self.pin3.ChangeDutyCycle(50 * conversion_constant)
 				self.pin1.ChangeDutyCycle(65 * conversion_constant)				
 				sleep(5)
 				self.pin1.ChangeDutyCycle(0 * conversion_constant)
@@ -138,4 +143,4 @@ class RPI_output:
 
 if __name__ == "__main__":
 	pi = RPI_output()
-	pi.test()
+	pi.main_loop()
