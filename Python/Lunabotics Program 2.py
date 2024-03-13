@@ -61,6 +61,7 @@ class RPI_output:
 		
 		#Calibrate driver board with stop signal to AN pins
 		self.pin3.start(0 * conversion_constant)
+		GPIO.output(22, False)
 		sleep(3)
 		print("done calibrating")
 		self.pin3.start(50 * conversion_constant)
@@ -110,9 +111,15 @@ class RPI_output:
 					raise JSONError("A value of lmotors or rmotors is outside the expected range")
 
 				if json["back_act"] == 1:
+					GPIO.output(22, True)
 					GPIO.output(17, True)
-				elif json["back_act"] in [-1, 0]:
+					GPIO.output(27, False)
+				elif json["back_act"] == -1:
+					GPIO.output(22, True)
 					GPIO.output(17, False)
+					GPIO.output(27, True)
+				elif json["back_act"] == 0:
+					GPIO.output(22, False)
 				
 				
 				sleep(0.25)
