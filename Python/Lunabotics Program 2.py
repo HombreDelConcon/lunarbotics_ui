@@ -28,7 +28,6 @@ class JSONError(Exception):
 	pass
 
 class RPI_output:
-
 	#initialize all pins
 	def __init__(self):
 		GPIO.setmode(GPIO.BCM)
