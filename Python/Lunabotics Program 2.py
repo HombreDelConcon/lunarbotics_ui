@@ -38,9 +38,8 @@ class RPI_output:
 		GPIO.setup(4, GPIO.OUT)
 		GPIO.setup(5, GPIO.OUT)
 		GPIO.setup(27, GPIO.OUT)
-		GPIO.setup(25, GPIO.OUT)
+		GPIO.setup(17, GPIO.OUT)
 		GPIO.setup(22, GPIO.OUT)
-		GPIO.output(22, True)
 		self.pin1 = GPIO.PWM(12,100)
 		self.pin2 = GPIO.PWM(13,100)
 		self.pin3 = GPIO.PWM(18, 100)
@@ -60,7 +59,7 @@ class RPI_output:
 		self.pin1.start(0 * conversion_constant)
 		self.pin2.start(50 * conversion_constant)
 		
-		#Calibrate driver board
+		#Calibrate driver board with stop signal to AN pins
 		self.pin3.start(0 * conversion_constant)
 		sleep(3)
 		print("done calibrating")
@@ -109,6 +108,12 @@ class RPI_output:
 					self.pin2.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
 				else:
 					raise JSONError("A value of lmotors or rmotors is outside the expected range")
+
+				if json["back_act"] == 1:
+					GPIO.output(17, True)
+				elif json["back_act"] in [-1, 0]:
+					GPIO.output(17, False)
+				
 				
 				sleep(0.25)
 
