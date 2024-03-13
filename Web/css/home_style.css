@@ -55,8 +55,8 @@ main > * {
     display: grid;
     grid-template-columns: 1fr 1fr;
     height: fit-content;
-    margin-top: 20px;
-    max-width: 700px;
+    width: 40vw;
+    max-width: 1000px;
 }
 
 .subcontainer {
@@ -85,6 +85,19 @@ main > * {
     font-weight: 500;
  }
 
+#controller_layout {
+    width: 60vw;
+    border: 3px solid black;
+    max-width: 1000px;
+}
+
+.centered-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    border: 0px;
+    background-color: transparent;
+}
 /* #button1, #button2 {
     display: none;
 } */
