@@ -112,14 +112,22 @@ class RPI_output:
 
 				if json["back_act"] == 1:
 					GPIO.output(22, True)
-					GPIO.output(17, True)
 					GPIO.output(27, False)
 				elif json["back_act"] == -1:
 					GPIO.output(22, True)
-					GPIO.output(17, False)
 					GPIO.output(27, True)
 				elif json["back_act"] == 0:
 					GPIO.output(22, False)
+				
+				if json["front_act"] == 1:
+					GPIO.output(17, True)
+					GPIO.output(27, False)
+				elif json["front_act"] == -1:
+					GPIO.output(17, False)
+					GPIO.output(27, True)
+				elif json["front_act"] == 0:
+					GPIO.output(22, False)
+				
 				
 				
 				sleep(0.25)
