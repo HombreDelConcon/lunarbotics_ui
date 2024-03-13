@@ -39,6 +39,8 @@ class RPI_output:
 		GPIO.setup(5, GPIO.OUT)
 		GPIO.setup(27, GPIO.OUT)
 		GPIO.setup(25, GPIO.OUT)
+		GPIO.setup(22, GPIO.OUT)
+		GPIO.output(22, True)
 		self.pin1 = GPIO.PWM(12,100)
 		self.pin2 = GPIO.PWM(13,100)
 		self.pin3 = GPIO.PWM(18, 100)
@@ -105,9 +107,10 @@ class RPI_output:
 					self.pin3.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
 					self.pin1.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
 					self.pin2.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
-
-				sleep(0.25)
+				else:
+					raise JSONError("A value of lmotors or rmotors is outside the expected range")
 				
+				sleep(0.25)
 
 		except KeyboardInterrupt as e:
 			self.pin1.stop()
@@ -130,6 +133,7 @@ class RPI_output:
 			print("You have provided an invalid key")		
 		else:
 			return json_data
+		
 	def test(self):
 		print("starting pwm")
 		self.pin1.start(0 * conversion_constant)
