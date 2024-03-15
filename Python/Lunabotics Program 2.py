@@ -40,6 +40,10 @@ class RPI_output:
 		GPIO.setup(17, GPIO.OUT)
 		GPIO.setup(22, GPIO.OUT)
 		GPIO.setup(23, GPIO.OUT)
+		GPIO.setup(0, GPIO.OUT)
+		GPIO.setup(1, GPIO.OUT)
+		GPIO.setup(5, GPIO.OUT)
+		GPIO.setup(6, GPIO.OUT)
 		self.pin1 = GPIO.PWM(12,100)
 		self.pin2 = GPIO.PWM(13,100)
 		self.pin3 = GPIO.PWM(18, 100)
@@ -131,6 +135,28 @@ class RPI_output:
 					GPIO.output(27, False)
 				elif json["front_act"] == 0:
 					GPIO.output(23, False)
+				
+				if json["bin_motors"] == 1:
+					GPIO.output(6, True)
+					GPIO.output(1, False)
+					GPIO.output(0, True)
+				elif json["bin_motors"] == -1:
+					GPIO.output(6, True)
+					GPIO.output(1, True)
+					GPIO.output(0, False)
+				elif json["bin_motors"] == 0:
+					GPIO.output(6, False)
+				
+				if json["le_motors"] == 1:
+					GPIO.output(5, True)
+					GPIO.output(1, False)
+					GPIO.output(0, True)
+				elif json["le_motors"] == -1:
+					GPIO.output(5, True)
+					GPIO.output(1, True)
+					GPIO.output(0, False)
+				elif json["le_motors"] == 0:
+					GPIO.output(5, False)
 				
 				sleep(0.25)
 
