@@ -39,6 +39,7 @@ class RPI_output:
 		GPIO.setup(27, GPIO.OUT)
 		GPIO.setup(17, GPIO.OUT)
 		GPIO.setup(22, GPIO.OUT)
+		GPIO.setup(23, GPIO.OUT)
 		self.pin1 = GPIO.PWM(12,100)
 		self.pin2 = GPIO.PWM(13,100)
 		self.pin3 = GPIO.PWM(18, 100)
@@ -111,23 +112,25 @@ class RPI_output:
 
 				if json["back_act"] == 1:
 					GPIO.output(22, True)
-					GPIO.output(27, False)
+					GPIO.output(27, True)
+					GPIO.output(17, False)
 				elif json["back_act"] == -1:
 					GPIO.output(22, True)
-					GPIO.output(27, True)
+					GPIO.output(27, False)
+					GPIO.output(17, True)
 				elif json["back_act"] == 0:
 					GPIO.output(22, False)
 				
 				if json["front_act"] == 1:
-					GPIO.output(17, True)
-					GPIO.output(27, False)
-				elif json["front_act"] == -1:
+					GPIO.output(23, True)
 					GPIO.output(17, False)
 					GPIO.output(27, True)
+				elif json["front_act"] == -1:
+					GPIO.output(23, True)
+					GPIO.output(17, True)
+					GPIO.output(27, False)
 				elif json["front_act"] == 0:
-					GPIO.output(22, False)
-				
-				
+					GPIO.output(23, False)
 				
 				sleep(0.25)
 
