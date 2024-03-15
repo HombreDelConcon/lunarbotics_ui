@@ -43,7 +43,6 @@ class RPI_output:
 		GPIO.setup(0, GPIO.OUT)
 		GPIO.setup(1, GPIO.OUT)
 		GPIO.setup(5, GPIO.OUT)
-		
 		GPIO.setup(6, GPIO.OUT)
 
 		self.pin1 = GPIO.PWM(12,100)
