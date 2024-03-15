@@ -19,10 +19,10 @@ class RobotState:
    def __init__(self):
       self.lmotors = 0
       self.rmotors = 0
-      self.le_motor = 0
-      self.bin_motor = 0
+      self.le_motors = 0
+      self.bin_motors = 0
       self.le_speed = 1
-      self.lr_motor_speed = 1
+      self.lr_speed = 1
       self.back_act = 0
       self.front_act = 0
 
