@@ -58,7 +58,7 @@ class RPI_output:
 
 		#Threshold voltage
 		pwm_thresh_high = 65
-		pwm_thresh_low = 0
+		pwm_thresh_low = 1
 
 		print("starting pwm...")
 		self.pin1.start(0 * conversion_constant)
