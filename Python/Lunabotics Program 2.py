@@ -94,24 +94,34 @@ class RPI_output:
 
 				if json["lmotors"] == 1 and json["rmotors"] == 1:
 					self.pin3.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
-					self.pin1.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
+					self.pin1.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
 					self.pin2.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
+					print("forward")
+					print((speed_constant * lr_speed_scalar) * conversion_constant)
 				elif json["lmotors"] == -1 and json["rmotors"] == -1:
 					self.pin3.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
-					self.pin1.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
+					self.pin1.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
 					self.pin2.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
+					print("back")
+					print((speed_constant * lr_speed_scalar) * conversion_constant)
 				elif json["lmotors"] == 0 and json["rmotors"] == 0:
 					self.pin3.ChangeDutyCycle(0)
 					self.pin1.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
 					self.pin2.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
+					print("stop")
+					print((speed_constant * lr_speed_scalar) * conversion_constant)
 				elif json["lmotors"] == 1 and json["rmotors"] == -1:
-					self.pin3.ChangeDutyCycle(50 * conversion_constant)
-					self.pin1.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
-					self.pin2.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
-				elif json["lmotors"] == -1 and json["rmotors"] == 1:
 					self.pin3.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
 					self.pin1.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
+					self.pin2.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
+					print("right")
+					print((speed_constant * lr_speed_scalar) * conversion_constant)
+				elif json["lmotors"] == -1 and json["rmotors"] == 1:
+					self.pin3.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
+					self.pin1.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
 					self.pin2.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
+					print("left")
+					print((speed_constant * lr_speed_scalar) * conversion_constant)
 				else:
 					raise JSONError("A value of lmotors or rmotors is outside the expected range")
 
