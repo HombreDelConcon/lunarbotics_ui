@@ -18,8 +18,8 @@ const int excavator_act_IN1 = 11;
 const int excavator_act_IN2 = 12;
 
 //Router Login
-const char ssid[] = "No Hotspot For U";
-const char pw[] = "Extr@cto700";
+const char ssid[] = "HU_LB_2.4G";
+const char pw[] = "RIP_ch@rging_b0ard";
 
 int status = WL_IDLE_STATUS;
 
@@ -44,12 +44,13 @@ void setup() {
   Serial.print("Connected Code: ");
   Serial.println(WL_CONNECTED);
 
-  // String fv = WiFi.firmwareVersion();
-  // if (fv < WIFI_FIRMWARE_LATEST_VERSION) {
-  //   Serial.print("Please upgrade the firmware to");
-  //   Serial.println(WIFI_FIRMWARE_LATEST_VERSION);
-  //   Serial.println(fv);
-  // }
+  String fv = WiFi.firmwareVersion();
+  if (fv < WIFI_FIRMWARE_LATEST_VERSION) {
+    Serial.print("Please upgrade the firmware to");
+    Serial.println(WIFI_FIRMWARE_LATEST_VERSION);
+    Serial.println(fv);
+  }
+
   listNetworks();
 
   // attempt to connect to WiFi network:
