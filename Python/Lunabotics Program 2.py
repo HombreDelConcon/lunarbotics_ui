@@ -24,6 +24,8 @@ if dc < 1 or dc > 99:
 
 conversion_constant = 5 / 3.2575
 
+attempts = 0
+
 class JSONError(Exception):
 	pass
 
@@ -188,6 +190,10 @@ class RPI_output:
 			print(json_data)
 		except requests.exceptions.ConnectionError as e:
 			print("Could not connect")
+			dummy_json = {
+				"lmotors":0, "rmotors":0, "le_motors":0, "bin_motors":0, "le_speed":0, "lr_speed":0, "back_act":0, "front_act":0
+			}
+			return dummy_json
 		except KeyError as f:
 			print("You have provided an invalid key")		
 		else:
