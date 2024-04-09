@@ -36,6 +36,7 @@ class RPI_output:
 		GPIO.setup(12, GPIO.OUT)
 		GPIO.setup(13, GPIO.OUT)
 		GPIO.setup(18, GPIO.OUT)
+		GPIO.setup(19, GPIO.OUT)
 		GPIO.setup(4, GPIO.OUT)
 		GPIO.setup(5, GPIO.OUT)
 		GPIO.setup(27, GPIO.OUT)
@@ -47,9 +48,10 @@ class RPI_output:
 		GPIO.setup(5, GPIO.OUT)
 		GPIO.setup(6, GPIO.OUT)
 
-		self.pin1 = GPIO.PWM(12,100)
-		self.pin2 = GPIO.PWM(13,100)
+		self.pin1 = GPIO.PWM(12, 100)
+		self.pin2 = GPIO.PWM(13, 100)
 		self.pin3 = GPIO.PWM(18, 100)
+		self.pin4 = GPIO.PWM(19, 100)
 
 	def main_loop(self) -> None:
 		#Speed is constrained to the max number we can multiply by the conversion 
@@ -68,10 +70,12 @@ class RPI_output:
 		
 		#Calibrate driver board with stop signal to AN pins
 		self.pin3.start(0 * conversion_constant)
+		self.pin4.start(0 * conversion_constant)
 		GPIO.output(22, False)
 		sleep(3)
 		print("done calibrating")
 		self.pin3.start(50 * conversion_constant)
+		self.pin4.start(50 * conversion_constant)
 
 		try:
 			while True:
@@ -96,37 +100,42 @@ class RPI_output:
 
 				if json["lmotors"] == 1 and json["rmotors"] == 1:
 					self.pin3.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
+					self.pin4.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
 					self.pin1.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
 					self.pin2.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
 					print("forward")
 					print((speed_constant * lr_speed_scalar) * conversion_constant)
 				elif json["lmotors"] == -1 and json["rmotors"] == -1:
 					self.pin3.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
+					self.pin4.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
 					self.pin1.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
 					self.pin2.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
 					print("back")
 					print((speed_constant * lr_speed_scalar) * conversion_constant)
 				elif json["lmotors"] == 0 and json["rmotors"] == 0:
 					self.pin3.ChangeDutyCycle(0)
+					self.pin4.ChangeDutyCycle(0)
 					self.pin1.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
 					self.pin2.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
 					print("stop")
 					print((speed_constant * lr_speed_scalar) * conversion_constant)
 				elif json["lmotors"] == 1 and json["rmotors"] == -1:
 					self.pin3.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
+					self.pin4.ChangeDutyCycle(0)
 					self.pin1.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
 					self.pin2.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
 					print("right")
 					print((speed_constant * lr_speed_scalar) * conversion_constant)
 				elif json["lmotors"] == -1 and json["rmotors"] == 1:
-					self.pin3.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
+					self.pin4.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
+					self.pin3.ChangeDutyCycle(0)
 					self.pin1.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
 					self.pin2.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
 					print("left")
 					print((speed_constant * lr_speed_scalar) * conversion_constant)
 				else:
 					raise JSONError("A value of lmotors or rmotors is outside the expected range")
-
+				
 				if json["back_act"] == 1:
 					GPIO.output(22, True)
 					GPIO.output(27, True)
@@ -170,7 +179,7 @@ class RPI_output:
 					GPIO.output(0, False)
 				elif json["le_motors"] == 0:
 					GPIO.output(5, False)
-				
+
 				sleep(0.25)
 
 		except KeyboardInterrupt as e:
