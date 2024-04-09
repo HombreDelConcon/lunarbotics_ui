@@ -65,8 +65,8 @@ class RPI_output:
 		pwm_thresh_low = 1
 
 		print("starting pwm...")
-		self.pin1.start(0 * conversion_constant)
-		self.pin2.start(50 * conversion_constant)
+		# self.pin1.start(0 * conversion_constant)
+		# self.pin2.start(50 * conversion_constant)
 		
 		#Calibrate driver board with stop signal to AN pins
 		self.pin3.start(0 * conversion_constant)
