@@ -103,15 +103,15 @@ class RPI_output:
 				if json["lmotors"] == 1 and json["rmotors"] == 1:
 					self.pin3.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
 					self.pin4.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
-					self.pin1.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
-					self.pin2.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
+					self.pin1.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
+					self.pin2.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
 					print("forward")
 					print((speed_constant * lr_speed_scalar) * conversion_constant)
 				elif json["lmotors"] == -1 and json["rmotors"] == -1:
 					self.pin3.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
 					self.pin4.ChangeDutyCycle((speed_constant * lr_speed_scalar) * conversion_constant)
-					self.pin1.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
-					self.pin2.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
+					self.pin1.ChangeDutyCycle(pwm_thresh_low * conversion_constant)
+					self.pin2.ChangeDutyCycle(pwm_thresh_high * conversion_constant)
 					print("back")
 					print((speed_constant * lr_speed_scalar) * conversion_constant)
 				elif json["lmotors"] == 0 and json["rmotors"] == 0:
