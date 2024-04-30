@@ -186,6 +186,7 @@ class RPI_output:
 			self.pin1.stop()
 			self.pin2.stop()
 			self.pin3.stop()
+			self.pin4.stop()
 			GPIO.cleanup()
 			print('ports cleaned')
 			print('closing program')
