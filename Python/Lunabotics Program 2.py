@@ -74,6 +74,8 @@ class RPI_output:
 		self.pin1.start(0 * conversion_constant)
 		self.pin2.start(0 * conversion_constant)
 		GPIO.output(22, False)
+		GPIO.output(23, False)
+		GPIO.output(5, False)
 		sleep(3)
 		print("done calibrating")
 		self.pin3.ChangeDutyCycle(50 * conversion_constant)
