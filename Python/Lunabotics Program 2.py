@@ -71,11 +71,13 @@ class RPI_output:
 		#Calibrate driver board with stop signal to AN pins
 		self.pin3.start(0 * conversion_constant)
 		self.pin4.start(0 * conversion_constant)
+		self.pin1.start(0 * conversion_constant)
+		self.pin2.start(0 * conversion_constant)
 		GPIO.output(22, False)
 		sleep(3)
 		print("done calibrating")
-		self.pin3.start(50 * conversion_constant)
-		self.pin4.start(50 * conversion_constant)
+		self.pin3.ChangeDutyCycle(50 * conversion_constant)
+		self.pin4.ChangeDutyCycle(50 * conversion_constant)
 
 		try:
 			while True:
